@@ -1,0 +1,190 @@
+root_symbol = { ('A' .. 'Z')+ }
+class_letter = { ('A' .. 'Z') }
+preferred_second_class_letter = { ('A' .. 'Z') }
+
+called = { ".CL" | " CL" | "*" }
+certificate = { ".CT" }
+contingent_value_right = { ".CVR" }
+convertible_called = { ".CV.CL" | " CVCL" | "%*" }
+convertible = { ".CV" | " CV" | "%" }
+when_issued = { "w" | " WI" | "#" }
+ex_distribution = { ".DP"  }
+accumulated_dividend = { ".DV" }
+emerging_company = { ".EC" | " EC" | "!" }
+estimated_cash = { ".EU" }
+foreign_news = { ".F.N" }
+index = { ".ID" }
+intra_day_nav = { ".IV" }
+mini = { ".MN" }
+prev_close_nav = { ".NV" }
+percent_paid = { ".PO" }
+partial_paid = { ".PP" | " PP" | "@" }
+part_called = { ".PT.CL" }
+
+cqs_rights_when_issued = { "rw" }
+cms_rights_when_issued = { " RTWI" }
+nasdaq_rights_when_issued = { "^#" }
+right_when_issued = @{
+  cqs_rights_when_issued |
+  cms_rights_when_issued |
+  nasdaq_rights_when_issued
+}
+
+cqs_rights = { "r" }
+cms_rights = { " RT" }
+nasdaq_rights = { "^" }
+rights = @{ cqs_rights | cms_rights | nasdaq_rights }
+
+small_corporate = { ".SC" }
+stamped = { ".SD" }
+mini_settlement = { ".SM" }
+shares_outstanding_in_thousands = { ".SO" }
+special = { ".SP" }
+settlement = { ".SV" }
+total_cash = { ".TC" }
+tier_two_securities = { ".TT" }
+units = { ".U" | " U" | "=" }
+variable_common_rights = { ".VR" }
+when_distributed = { ".WD" | " WD" | "$" }
+
+warrant_base = { ".WS" | " WS" | "+" }
+with_warrants = { ".W.WS" }
+cqs_warrant_series = _{ ".WS." ~ class_letter }
+cms_warrant_series = _{ " WS" ~ class_letter }
+nasdaq_warrant_series = _{ "+" ~ class_letter }
+warrants_series = {
+  cqs_warrant_series |
+  cms_warrant_series |
+  nasdaq_warrant_series
+}
+warrants_when_issued = { ".WSw" | " WSWI" | "+#" }
+warrants = _{
+  with_warrants |
+  warrants_when_issued |
+  warrants_series |
+  warrant_base
+}
+
+cqs_preferred_class = _{ "p" ~ class_letter }
+cms_preferred_class = _{ " PR" ~ class_letter }
+nasdaq_preferred_class = _{ "-" ~ class_letter }
+preferred_class = {
+  cqs_preferred_class |
+  cms_preferred_class |
+  nasdaq_preferred_class
+}
+
+cqs_preferred_class_convertible = _{ "p" ~ class_letter ~ ".CV" }
+cms_preferred_class_convertible = _{ " PR" ~ class_letter ~ "CV" }
+nasdaq_preferred_class_convertible = _{ "-" ~ class_letter ~ "%" }
+preferred_class_convertible = {
+  cqs_preferred_class_convertible |
+  cms_preferred_class_convertible |
+  nasdaq_preferred_class_convertible
+}
+
+cqs_preferred_class_when_distributed = _{ "p" ~ class_letter ~ ".WD" }
+cms_preferred_class_when_distributed = _{ " PR" ~ class_letter ~ "WD" }
+nasdaq_preferred_class_when_distributed = _{ "-" ~ class_letter ~ "$" }
+preferred_class_when_distributed = {
+  cqs_preferred_class_when_distributed |
+  cms_preferred_class_when_distributed |
+  nasdaq_preferred_class_when_distributed 
+}
+
+cqs_preferred_class_called = _{ "p" ~ class_letter ~ ".CL" }
+cms_preferred_class_called = _{ " PR" ~ class_letter ~ "CL" }
+nasdaq_preferred_class_called = _{ "-" ~ class_letter ~ "*" }
+preferred_class_called = {
+  cqs_preferred_class_called |
+  cms_preferred_class_called |
+  nasdaq_preferred_class_called
+}
+
+cqs_preferred_class_when_issued = _{ "p" ~ class_letter ~ "w" }
+cms_preferred_class_when_issued = _{ " PR" ~ class_letter ~ "WI" }
+nasdaq_preferred_class_when_issued = _{ "-" ~ class_letter ~ "#" }
+preferred_class_when_issued = {
+  cqs_preferred_class_when_issued |
+  cms_preferred_class_when_issued |
+  nasdaq_preferred_class_when_issued
+}
+
+preferred_second_class = { "pC" ~ preferred_second_class_letter }
+
+preferred_base = { "p" | " PR" | "-" }
+preferred_when_issued = { "pw" | " PRWI" | "-#" }
+preferred_called = { "p.CL" | " PRCL" | "-*" }
+preferred_when_distributed = { "p.WD" | " PRWD" | "-$" }
+preferred_convertible = { "p.CV" }
+preferred_convertible_called = { "p.CV.CL" }
+
+preferred = _{
+  preferred_when_issued |
+  preferred_convertible_called |
+  preferred_called |
+  preferred_convertible |
+  preferred_when_distributed |
+  preferred_second_class |
+  preferred_class_convertible |
+  preferred_class_when_distributed |
+  preferred_class_called |
+  preferred_class_when_issued |
+  preferred_class |
+  preferred_base
+}
+
+test = { ".TEST" | " TEST" | "~" }
+
+class_suffix_called = { ".CL" | "CL" | "*" }
+class_suffix_convertible = { ".CV" | "CV" | "%" }
+class_suffix_when_issued = { "w" | "WI" | "#" }
+
+class_suffix = _{
+  class_suffix_called |
+  class_suffix_convertible |
+  class_suffix_when_issued
+}
+
+share_class = { ("." | " ") ~ class_letter ~ class_suffix? }
+
+suffix = _{
+  convertible_called |
+  called |
+  certificate |
+  contingent_value_right |
+  convertible |
+  ex_distribution |
+  accumulated_dividend |
+  emerging_company |
+  estimated_cash |
+  foreign_news |
+  index |
+  intra_day_nav |
+  mini |
+  prev_close_nav |
+  percent_paid |
+  partial_paid |
+  part_called |
+  right_when_issued |
+  rights |
+  small_corporate |
+  stamped |
+  mini_settlement |
+  shares_outstanding_in_thousands |
+  special |
+  settlement |
+  total_cash |
+  tier_two_securities |
+  units |
+  variable_common_rights |
+  when_distributed |
+  when_issued |
+  warrants |
+  preferred |
+  test |
+  share_class
+}
+
+symbol = { root_symbol ~ suffix? }
+parse = _{ SOI ~ symbol ~ EOI }

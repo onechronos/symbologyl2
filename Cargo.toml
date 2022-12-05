@@ -1,0 +1,20 @@
+[package]
+name = "symbologyl2"
+description = "Symbology normalization and translation for listed US equities"
+homepage = "https://github.com/onechronos/symbologyl2"
+repository = "https://github.com/onechronos/symbologyl2"
+version = "0.1.0"
+license-file = "LICENSE.txt"
+readme = "README.md"
+edition = "2021"
+exclude = ["./test_data"]
+
+[dependencies]
+thiserror = "1.0.37"
+serde = { version = "1.0.145", features = ["derive"] }
+pest = "2.5.0"
+pest_derive = "2.5.0"
+
+[dev-dependencies]
+csv = "1.1.6"
+rusty-hook = "^0.11.2"
