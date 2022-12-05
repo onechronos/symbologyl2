@@ -1,0 +1,27 @@
+name: format + lint + test
+
+on:
+  - push
+
+jobs:
+  test:
+    name: Code quality + tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache rust build artifacts
+        uses: Swatinem/rust-cache@v2
+
+      - name: Run cargo fmt
+        run: cargo fmt
+
+      - name: Run clippy
+        run: cargo clippy --all-features --all-targets -- -D warnings
+
+      - name: Run tests
+        run: cargo test --all

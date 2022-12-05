@@ -1,3 +1,5 @@
+#![allow(clippy::result_large_err)]
+
 use std::borrow::Borrow;
 use std::fmt;
 
@@ -82,6 +84,7 @@ impl NasdaqIntegrated {
 
 /// All known listed US equity symbology suffixes. Note that not all suffixes
 /// are representable in all symbology schemes.
+#[allow(clippy::large_enum_variant)]
 #[derive(Debug, Clone, PartialEq)]
 pub enum Suffix {
     Class(String),
@@ -1071,6 +1074,9 @@ mod tests {
 
         let good_parse = from_any_to_cqs("FOO A").unwrap();
         assert_eq!("FOO.A", good_parse);
+
+        let root_only = from_any_to_cqs("FOO").unwrap();
+        assert_eq!("FOO", root_only);
     }
 
     #[test]
@@ -1080,5 +1086,20 @@ mod tests {
 
         let good_parse = from_any_to_cms("FOO.A").unwrap();
         assert_eq!("FOO A", good_parse);
+
+        let root_only = from_any_to_cms("FOO").unwrap();
+        assert_eq!("FOO", root_only);
+    }
+
+    #[test]
+    fn test_from_any_to_nasdaq_integrated() {
+        let bad_parse = from_any_to_nasdaq("123*#");
+        assert!(bad_parse.is_err());
+
+        let good_parse = from_any_to_nasdaq("FOOpA").unwrap();
+        assert_eq!("FOO-A", good_parse);
+
+        let root_only = from_any_to_nasdaq("FOO").unwrap();
+        assert_eq!("FOO", root_only);
     }
 }
