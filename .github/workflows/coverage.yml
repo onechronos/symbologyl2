@@ -1,0 +1,29 @@
+name: code coverage
+
+on:
+  - push
+
+jobs:
+  test:
+    name: Code coverage
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache rust build artifacts
+        uses: Swatinem/rust-cache@v2
+
+      - name: Run code coverage
+        run: |
+          cargo +stable install cargo-llvm-cov && \
+          cargo llvm-cov --lcov --output-path target/lcov.info
+
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path-to-lcov: target/lcov.info
