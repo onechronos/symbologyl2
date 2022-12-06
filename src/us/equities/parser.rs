@@ -47,6 +47,12 @@ macro_rules! typed_string {
             }
         }
 
+        impl AsRef<str> for $ident {
+            fn as_ref(&self) -> &str {
+                self.0.as_ref()
+            }
+        }
+
         impl $ident {
             #[must_use]
             pub fn as_str(&self) -> &str {
@@ -64,21 +70,21 @@ typed_string!(NasdaqIntegrated);
 impl CQSSuffix {
     #[must_use]
     pub fn join_root(&self, root: &RootSymbol) -> String {
-        format!("{}{}", root.as_str(), self.as_str())
+        format!("{}{}", &root, &self)
     }
 }
 
 impl CMSSuffix {
     #[must_use]
     pub fn join_root(&self, root: &RootSymbol) -> String {
-        format!("{} {}", root.as_str(), self.as_str())
+        format!("{} {}", &root, &self)
     }
 }
 
 impl NasdaqIntegrated {
     #[must_use]
     pub fn join_root(&self, root: &RootSymbol) -> String {
-        format!("{}{}", root.as_str(), self.as_str())
+        format!("{}{}", &root, &self)
     }
 }
 
@@ -557,7 +563,7 @@ mod tests {
             fn $test_fn(full_symbol: &str, expected_root: &str, expected_suffix: &Suffix) {
                 let Symbol { root, suffix } = parse(full_symbol).unwrap();
                 let suffix = suffix.unwrap();
-                assert_eq!(expected_root, root.as_str());
+                assert_eq!(expected_root, root.to_string());
                 assert_eq!(expected_suffix, &suffix);
                 let native_suffix = suffix.$suffix_func().unwrap();
                 assert_eq!(full_symbol, native_suffix.join_root(&root));
@@ -1101,5 +1107,15 @@ mod tests {
 
         let root_only = from_any_to_nasdaq("FOO").unwrap();
         assert_eq!("FOO", root_only);
+    }
+
+    #[test]
+    fn test_typed_string_as_ref() {
+        let parsed = parse("TESTpA").unwrap();
+        let root_symbol_str: &str = parsed.root().as_ref();
+        let suffix = parsed.suffix().unwrap().cqs_suffix().unwrap();
+        let suffix_str: &str = suffix.as_ref();
+        assert_eq!("TEST", root_symbol_str);
+        assert_eq!("pA", suffix_str);
     }
 }
