@@ -3,9 +3,10 @@
 use std::borrow::Borrow;
 use std::fmt;
 
-use pest::{error::Error, Parser};
+use pest::{Parser, error::Error};
 use thiserror::Error as ThisError;
 
+#[allow(clippy::large_enum_variant)]
 #[derive(ThisError, Debug)]
 pub enum SymbologyError {
     #[error("parse error")]
@@ -750,25 +751,25 @@ mod tests {
     fn test_cta_symbol_table() {
         for class in ('A'..='T').chain('V'..='Z') {
             cqs_helper(
-                &format!("FOO.{}", class),
+                &format!("FOO.{class}"),
                 "FOO",
                 &Suffix::Class(String::from(class)),
             );
 
             cqs_helper(
-                &format!("FOO.{}.CL", class),
+                &format!("FOO.{class}.CL"),
                 "FOO",
                 &Suffix::ClassCalled(String::from(class)),
             );
 
             cqs_helper(
-                &format!("FOO.{}.CV", class),
+                &format!("FOO.{class}.CV"),
                 "FOO",
                 &Suffix::ClassConvertible(String::from(class)),
             );
 
             cqs_helper(
-                &format!("FOO.{}w", class),
+                &format!("FOO.{class}w"),
                 "FOO",
                 &Suffix::ClassWhenIssued(String::from(class)),
             );
@@ -810,25 +811,25 @@ mod tests {
 
         for class in ('A'..='T').chain('V'..='Z') {
             cqs_helper(
-                &format!("FOOp{}", class),
+                &format!("FOOp{class}"),
                 "FOO",
                 &Suffix::PreferredClass(String::from(class)),
             );
 
             cqs_helper(
-                &format!("FOOp{}.CV", class),
+                &format!("FOOp{class}.CV"),
                 "FOO",
                 &Suffix::PreferredClassConvertible(String::from(class)),
             );
 
             cqs_helper(
-                &format!("FOOp{}.CL", class),
+                &format!("FOOp{class}.CL"),
                 "FOO",
                 &Suffix::PreferredClassCalled(String::from(class)),
             );
 
             cqs_helper(
-                &format!("FOOp{}w", class),
+                &format!("FOOp{class}w"),
                 "FOO",
                 &Suffix::PreferredClassWhenIssued(String::from(class)),
             );
@@ -842,7 +843,7 @@ mod tests {
 
         for class in ('A'..='K').chain('M'..='S') {
             cqs_helper(
-                &format!("FOOpC{}", class),
+                &format!("FOOpC{class}"),
                 "FOO",
                 &Suffix::SecondCategoryOfPreferred(String::from(class)),
             );
@@ -876,7 +877,7 @@ mod tests {
 
         for class in ('A'..='T').chain('V'..='Z') {
             cqs_helper(
-                &format!("FOO.WS.{}", class),
+                &format!("FOO.WS.{class}"),
                 "FOO",
                 &Suffix::WarrantsClass(String::from(class)),
             );
@@ -931,7 +932,7 @@ mod tests {
                 assert_eq!(&parsed_from_cms, &parsed_from_cqs);
 
                 if let Some(suffix) = parsed_from_cms.suffix {
-                    let root_symbol = entry.cms_suffix.split(' ').into_iter().next().unwrap();
+                    let root_symbol = entry.cms_suffix.split(' ').next().unwrap();
                     assert_eq!(root_symbol, parsed_from_cms.root.as_str());
                     let cms_suffix = suffix.cms_suffix().unwrap();
                     assert_eq!(
